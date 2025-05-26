@@ -1,2 +1,11 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.py linguist-language=Python
+*.md text
+*.toml text
+*.yml text
+*.yaml text
+*.json text
+*.ini text
+*.cfg text
+*.txt text
