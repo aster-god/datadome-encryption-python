@@ -1,6 +1,5 @@
 import json
 import ctypes
-import codecs
 
 class PRNGHelper:
     def _mix_int(self, value):
@@ -75,7 +74,8 @@ class DataDomeDecryptor:
         bytes_ = []
         n = self.salt
         i = 0
-        while i + 3 < len(encoded):
+        # Process full groups of 4 characters (3 bytes each)
+        while i + 4 <= len(encoded):
             c1 = self._decode6_bits(ord(encoded[i]))
             c2 = self._decode6_bits(ord(encoded[i + 1]))
             c3 = self._decode6_bits(ord(encoded[i + 2]))
@@ -86,11 +86,24 @@ class DataDomeDecryptor:
             bytes_.append((chunk & 255) ^ ((n - 3) & 255))
             i += 4
             n -= 3
-        if self.ctype == "interstitial":
-            return bytes_
-        mod = len(encoded) % 4
-        if mod:
-            bytes_ = bytes_[:-(3 - mod)]
+        
+        # Handle remaining characters (padding case)
+        remaining = len(encoded) - i
+        if remaining == 2:
+            # 2 chars encode 1 byte
+            c1 = self._decode6_bits(ord(encoded[i]))
+            c2 = self._decode6_bits(ord(encoded[i + 1]))
+            chunk = (c1 << 18) | (c2 << 12)
+            bytes_.append(((chunk >> 16) & 255) ^ ((n - 1) & 255))
+        elif remaining == 3:
+            # 3 chars encode 2 bytes
+            c1 = self._decode6_bits(ord(encoded[i]))
+            c2 = self._decode6_bits(ord(encoded[i + 1]))
+            c3 = self._decode6_bits(ord(encoded[i + 2]))
+            chunk = (c1 << 18) | (c2 << 12) | (c3 << 6)
+            bytes_.append(((chunk >> 16) & 255) ^ ((n - 1) & 255))
+            bytes_.append(((chunk >> 8) & 255) ^ ((n - 2) & 255))
+        
         return bytes_
 
     def decrypt(self, encoded):
@@ -103,8 +116,57 @@ class DataDomeDecryptor:
         buffer = buffer_with_marker[:-1]  # Remove marker
         prng = self.prng_helper._create_prng(self.prng_seed, self.salt, True)[0]
         decoded_bytes = [b ^ prng() for b in buffer]
-        json_str = ''.join(chr(b) for b in decoded_bytes)
+        # Decode UTF-8 bytes properly (encryption encodes strings as UTF-8)
+        json_str = bytes(decoded_bytes).decode('utf-8')
         return self._parse_json_string(json_str)
+
+    def _json_unescape(self, s):
+        """Properly unescape JSON string escape sequences while preserving UTF-8."""
+        result = []
+        i = 0
+        while i < len(s):
+            if s[i] == '\\' and i + 1 < len(s):
+                next_char = s[i + 1]
+                if next_char == '"':
+                    result.append('"')
+                    i += 2
+                elif next_char == '\\':
+                    result.append('\\')
+                    i += 2
+                elif next_char == 'n':
+                    result.append('\n')
+                    i += 2
+                elif next_char == 'r':
+                    result.append('\r')
+                    i += 2
+                elif next_char == 't':
+                    result.append('\t')
+                    i += 2
+                elif next_char == 'b':
+                    result.append('\b')
+                    i += 2
+                elif next_char == 'f':
+                    result.append('\f')
+                    i += 2
+                elif next_char == '/':
+                    result.append('/')
+                    i += 2
+                elif next_char == 'u' and i + 5 < len(s):
+                    hex_str = s[i + 2:i + 6]
+                    try:
+                        result.append(chr(int(hex_str, 16)))
+                        i += 6
+                    except ValueError:
+                        result.append(s[i])
+                        i += 1
+                else:
+                    # Unknown escape, keep as-is
+                    result.append(s[i])
+                    i += 1
+            else:
+                result.append(s[i])
+                i += 1
+        return ''.join(result)
 
     def _parse_json_string(self, json_str):
         result = []
@@ -221,6 +283,7 @@ class DataDomeDecryptor:
                         except Exception:
                             value = array_str
                     elif json_str[i] in '-0123456789':
+                        # Parse JSON number: digits, minus, decimal point, and scientific notation (e.g. -3.14e+10)
                         num_str = ''
                         while i < len(json_str) and json_str[i] in '-0123456789.eE+':
                             num_str += json_str[i]
@@ -243,7 +306,7 @@ class DataDomeDecryptor:
                         continue
                     result.append([
                         key, 
-                        codecs.decode(value, "unicode_escape") if type(value) == str else value
+                        self._json_unescape(value) if isinstance(value, str) else value
                     ])
                 else:
                     i += 1
