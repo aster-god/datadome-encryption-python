@@ -115,9 +115,10 @@ class DataDomeEncryptor:
         output = []
         n = salt
         while i < len(byte_arr):
-            b1 = (255 & (n - 1) ^ byte_arr[i]) if i < len(byte_arr) else 0
-            b2 = (255 & (n - 2) ^ byte_arr[i + 1]) if i + 1 < len(byte_arr) else 0
-            b3 = (255 & (n - 3) ^ byte_arr[i + 2]) if i + 2 < len(byte_arr) else 0
+            # Always XOR with salt, use 0 for missing bytes (matches JS behavior with undefined → 0)
+            b1 = (255 & (n - 1)) ^ byte_arr[i]
+            b2 = (255 & (n - 2)) ^ (byte_arr[i + 1] if i + 1 < len(byte_arr) else 0)
+            b3 = (255 & (n - 3)) ^ (byte_arr[i + 2] if i + 2 < len(byte_arr) else 0)
             chunk = (b1 << 16) | (b2 << 8) | b3
             output.append(chr(encode6_bits((chunk >> 18) & 63)))
             output.append(chr(encode6_bits((chunk >> 12) & 63)))
