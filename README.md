@@ -7,13 +7,14 @@
   <img src="https://img.shields.io/badge/Type-Research-blue" alt="Type: Research">
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License: MIT">
   <a href="https://pypi.org/project/datadome-encryption/"><img src="https://img.shields.io/pypi/v/datadome-encryption?color=blue&logo=pypi&style=flat-square" alt="PyPI version"></a>
-  <a href="https://github.com/GlizzyKingDreko/datadome-encryption-python"><img src="https://img.shields.io/github/stars/GlizzyKingDreko/datadome-encryption-python?style=flat-square&logo=github" alt="GitHub stars"></a>
+  <a href="https://github.com/aster-god/datadome-encryption-python"><img src="https://img.shields.io/github/stars/aster-god/datadome-encryption-python?style=flat-square&logo=github" alt="GitHub stars"></a>
 </div>
 <br>
 <div align="center">
 
-  <a href="https://github.com/GlizzyKingDreko/datadome-encryption"><img src="https://img.shields.io/badge/Node.js%20version-339933?logo=nodedotjs&logoColor=white&style=flat-square" alt="Node.js version"></a>
-  <a href="https://medium.com/@glizzykingdreko/breaking-down-datadome-captcha-waf-d7b68cef3e21"><img src="https://img.shields.io/badge/Read%20the%20full%20article%20on%20Medium-12100E?logo=medium&logoColor=white&style=flat-square" alt="Read the full article on Medium"></a>
+  <a href="https://github.com/aster-god/datadome-encryption"><img src="https://img.shields.io/badge/Node.js%20version-339933?logo=nodedotjs&logoColor=white&style=flat-square" alt="Node.js version"></a>
+---
+  <a href="https://medium.com/@aster-god/breaking-down-datadome-captcha-waf-d7b68cef3e21"><img src="https://img.shields.io/badge/Read%20the%20full%20article%20on%20Medium-12100E?logo=medium&logoColor=white&style=flat-square" alt="Read the full article on Medium"></a>
 </div>
 
 ---
@@ -139,27 +140,11 @@ This repository provides a clean, well-documented Python implementation of DataD
 - Developers integrating with DataDome-protected endpoints
 - Anyone interested in reverse engineering or cryptography
 
-For a full technical analysis, reverse engineering details, and a Node.js implementation, see the [Node.js version](https://github.com/GlizzyKingDreko/datadome-encryption) and the [Medium article](https://medium.com/@glizzykingdreko/breaking-down-datadome-captcha-waf-d7b68cef3e21).
+For a full technical analysis, reverse engineering details, and a Node.js implementation, see the [Node.js version](https://github.com/aster-god/datadome-encryption) and the [Medium article](https://medium.com/@aster-god/breaking-down-datadome-captcha-waf-d7b68cef3e21).
 
 ### Converting from NodeJS
 The hardest part of converting the module from NodeJS to Python was ensuring that all calculations were correctly translated and still executed as 32-bit operations, just as NodeJS/JavaScript does—whereas Python uses 64-bit integers by default.
 
----
-
-## Author
-
-If you found this project helpful or interesting, consider starring the repo and following me for more security research and tools, or buy me a coffee to keep me up
-
-<p align="center">
-  <a href="https://github.com/GlizzyKingDreko"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
-  <a href="https://twitter.com/GlizzyKingDreko"><img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"></a>
-  <a href="https://medium.com/@GlizzyKingDreko"><img src="https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white" alt="Medium"></a>
-  <a href="https://discord.com/users/GlizzyKingDreko"><img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
-  <a href="mailto:glizzykingdreko@protonmail.com"><img src="https://img.shields.io/badge/ProtonMail-8B89CC?style=for-the-badge&logo=protonmail&logoColor=white" alt="Email"></a>
-  <a href="https://buymeacoffee.com/glizzykingdreko"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-yellow?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white" alt="Buy Me a Coffee"></a>
-</p>
-
----
 
 ## Development
 
